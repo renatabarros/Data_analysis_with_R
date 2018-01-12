@@ -1,0 +1,74 @@
+## This code was made to analyse data on children out of primary school for various countries over time.
+## The Excel file was downloaded from http://www.gapminder.org/data/ (Children out of school, primary)
+## and converted to a csv file.
+
+# Start by loading the packages from the library
+library(ggplot2)
+library(tidyr)
+
+# Now read the csv file and load the data
+setwd("C:/Users/Renata/Desktop/EDA with R course/lesson4")
+df <- read.csv('children_data.csv', header = T, na.strings = "NA", sep = ";", check.names = F)
+head(df)
+
+# Data seems perfect! Now let´s analyse how the number of children out of school changed over the years.
+# Starting with some stats for 1970
+summary(df$`1970`)
+
+# And the histogram. 
+
+qplot(x = df$`1970`, binwidth = 0.5,
+      xlab = "Children out of school in 1970",
+      ylab = "Frequency") +
+   scale_x_log10()
+
+# For 2011 
+
+summary(df$`2011`)
+
+qplot(x = df$`2011`, binwidth = 0.5,
+      xlab = "Children out of school in 2011",
+      ylab = "Frequency") +
+  scale_x_log10()
+
+# For 2001
+
+summary(df$`2001`)
+
+qplot(x = df$`2001`, binwidth = 0.5,
+      xlab = "Children out of school in 2001",
+      ylab = "Frequency") +
+  scale_x_log10()
+
+# It seems numbers increased from 1970 to 2001, and then decreased in 2011.
+# To investigate that let´s do a plot that shows total number of children out of school over the period sampled
+
+
+years_x <- c(seq(1970, 2011, 1))
+years_x
+
+sumPerYear <- colSums(df[,-1], na.rm = T)
+sumPerYear
+
+qplot(x = years_x, y = sumPerYear,
+      xlab = "Year",
+      ylab = "Total number of children out of school worldwide")
+
+# Interestingly the number of children out of school reached a peak in 2000 and then started dropping.
+# But as this is a very incomplete dataset, this cannot be taken as true (yet).
+# E.g. the peak in 1971 is explained by the presence of data from India, which only appears in this year and then in 1999.
+# Let's see what happens excluding India from the sum
+
+sumWithoutIndia <- colSums(df[-102,-1], na.rm = T)
+qplot(x = years_x, y = sumWithoutIndia,
+      xlab = "Year",
+      ylab = "Total number of children out of school worldwide (India excluded)")
+
+# The 1971 outlier is gone. China might be inflating numbers too.
+sumWithoutChina <- colSums(df[-45,-1], na.rm = T)
+qplot(x = years_x, y = sumWithoutChina,
+      xlab = "Year",
+      ylab = "Total number of children out of school worldwide (China excluded)")
+
+# It seems the overall trend was steadily increasing up until early 2000s, and might be dropping since then.
+# Recent data would be necessary to confirm this trend.
