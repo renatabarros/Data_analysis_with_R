@@ -1,0 +1,59 @@
+# Load the packages
+
+library(ggplot2)
+install.packages("lubridate")
+library(lubridate)
+
+# Read csv file. This file was provided by the Udacity course.
+
+data <- read.csv("birthdaysExample.csv", header = T)
+
+# Get firts few lines to check format
+
+head(data)
+
+# Turn data into dates. Lubridate didn't work at first, so that's another way to do it:
+
+dates <- as.character(data$dates)
+birthdays <- as.Date(dates, "%m/%d/%y")
+
+# Read first few lines
+
+head(birthdays)
+
+# It worked! Now some plots to see the birthdays distribution
+# Define variables for day of month, month of year & year
+
+days <- day(birthdays)
+months <- month(birthdays)
+years <- year(birthdays)
+
+# Day of month distribution
+
+qplot(days, binwidth = 1,
+      xlab = "Day of month",
+      ylab = "Number of birthdays",
+      color = I('black'), fill = I('#099D39')) +
+  scale_x_continuous(breaks = seq(1, 31, 1))
+
+# Month of year distribution
+
+qplot(months, binwidth = 1,
+      xlab = "Month of year",
+      ylab = "Number of birthdays",
+      color = I('black'), fill = I('#399D39')) +
+  scale_x_continuous(breaks = seq(1, 12, 1))
+
+# Stats for days and months data
+
+summary(days)
+
+summary(months)
+
+# How many people share my birthday (09/17)?
+
+length(birthdays[day(birthdays) == 17 & month(birthdays) == 9])
+
+# How many birthdays in each month?
+
+by(day(birthdays), month(birthdays), sum)
