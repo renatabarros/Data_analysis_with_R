@@ -1,0 +1,30 @@
+## This code was created to visualise the diamonds dataset that comes with ggplot ##
+
+# Load ggplot and diamond data
+library(ggplot2)
+data(diamonds)
+head(diamonds)
+
+# Histogram of diamond "prices" faceted by diamond "color" and bars coloured by "cut"
+ggplot(aes(x = price), data = diamonds) +
+  geom_histogram(aes(fill = diamonds$cut)) +
+  facet_wrap(~ color)
+
+# Scatter plot of diamond price vs. table, coloured by diamond cut
+ggplot(aes(x = table, y = price), data = diamonds) +
+  geom_point(aes(color = cut)) +
+  scale_color_brewer(type = 'qual')
+
+# Scatter plot of diamond price vs volume (x*y*z), coloured by diamond clarity
+diamonds$volume <- diamonds$x * diamonds$y * diamonds$z
+head(diamonds)
+
+ggplot(aes(x = volume, y = price),
+       data = subset(diamonds, volume <= quantile(volume, 0.99))) +
+  geom_point(aes(color = clarity)) + 
+  scale_y_log10()
+
+# Scatter plot of the price/carat ratio vs. cut, faceted by clarity and coloured by diamond color
+ggplot(aes(x = cut, y = price/carat), data = diamonds) +
+  geom_jitter(aes(color = color)) +
+  facet_wrap(~ clarity)
