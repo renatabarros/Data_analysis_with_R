@@ -1,0 +1,37 @@
+## This code was created to look at the cakes dataset that comes in alr3 and find out in whick conditions the best rated cakes are baked ##
+
+library(ggplot2)
+library(alr3)
+data(cakes)
+head(cakes)
+summary(cakes)
+
+# Cakes variables: X1 = baking time (min), X2 = baking temperature (F), Y = palatability score (0-10)
+
+# Histrogram to see the distribution of palatability scores
+ggplot(aes(x = Y), data = cakes) +
+  geom_histogram() +
+  xlab("Cakes palatability score")
+
+# Create a variable of score bins
+
+cakes$score.bins <- cut(cakes$Y, breaks = c(0, 5, 7, 8, 9), right = T)
+
+# Histogram showing the distribution of baking time coloured by score bins
+ggplot(aes(x = X1), data = cakes) +
+  geom_histogram(aes(fill = score.bins)) +
+  xlab("Baking time (min)")
+
+# Scatter plot of baking time vs. score
+ggplot(aes(x = Y, y = X1), data = cakes) +
+  geom_point(aes(color = score.bins)) +
+  xlab("Cakes palatability score") +
+  ylab("Baking time (min)")
+
+# Scatter plot of baking temperature vs. score
+ggplot(aes(x = Y, y = X2), data = cakes) +
+  geom_point(aes(color = score.bins)) +
+  xlab("Cakes palatability score") +
+  ylab("Baking temperature (F)")
+
+# The highest chance of making the perfect(ish) cake: baking it for 35 min at 350 F!
